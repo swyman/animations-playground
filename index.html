@@ -1,0 +1,129 @@
+<html>
+<head>
+  <title>Animations</title>
+  <style type="text/css">
+    body {
+      color: blue;
+    }
+    #container {
+      border: 1px solid black;
+      height: 500px;
+      width: 500px;
+    }
+    .row, .cell {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    .cell:first-child {
+      margin-left: -1px;
+    }
+    .row {
+      height: 50px;
+      width: 100%;
+      border: 1px dashed green;
+      float: left;
+    }
+    .cell {
+      height: 50px;
+      width: 50px;
+      border: 1px solid red;
+      float: left;
+      background-color: #D3BCC0;
+    }
+    .odd {
+      background-color: #F2D7EE;
+    }
+    .target {
+      position: absolute;
+      display: inline-block;
+      display: none;
+      height: 50px;
+      width: 50px;
+      border: 1px solid black;
+      transition: all 1s linear;
+    }
+    .target.active {
+      background-color: green;
+      transform: /*rotateZ(180deg) rotateY(180deg)*/ scale(4) translateX(0%);
+      transform-origin: left top;
+    }
+    .target.inactive {
+      height: 50px;
+      width: 50px;
+      background-color: white;
+    }
+  </style>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+  </script>
+</head>
+<body>
+  <h1>Animations</h1>
+  <div id="container">
+    <div class="target inactive"></div>
+  </div>
+  <script type="text/javascript">
+    const N_ROWS = 10;
+    const N_COLS = 10;
+    const N_CELLS = N_ROWS * N_COLS;
+
+    /*
+    [[],[],[],[],[]],
+    [[],[],[],[],[]]
+    */
+    window.gameState = {
+      cells: [],
+    };
+    for (var height = 0; height < N_ROWS; height++) {
+      window.gameState.cells.push([]);
+      for (var width = 0; width < N_COLS; width++) {
+        window.gameState.cells[height].push({
+          row: height,
+          column: width,
+          active: false,
+        });
+      }
+    }
+    window.render = function render(cells) {
+      var container = document.getElementById('container');
+
+      console.log(cells);
+      for (var row = 0; row < cells.length; row++) {
+        console.log('row: ', row);
+        console.log(cells[row]);
+        for (var column = 0; column < cells[row].length; column++) {
+          console.log('column: ', column);
+          var newCell = document.createElement('div');
+          newCell.className = 'cell';
+          if ((row + column) % 2 === 0) {
+            newCell.className = newCell.className + ' odd';
+          }
+          container.appendChild(newCell);
+        }
+      }
+    };
+
+    
+
+    function updateCells() {
+
+    }
+
+    window.render(window.gameState.cells);
+  </script>
+
+  <script type="text/javascript">
+    var toggleActive = function() {
+      $('.target').toggleClass('active');
+      $('.target').toggleClass('inactive');
+    }
+    var active = function() {
+      $('.target').removeClass('inactive').addClass('active');
+    }
+    var inactive = function() {
+      $('.target').removeClass('active').addClass('inactive');
+    }
+    $('.target').on('click', function() { toggleActive(); });
+  </script>
+</body>
+</html>
