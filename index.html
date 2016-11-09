@@ -15,9 +15,6 @@
       margin: 0;
       padding: 0;
     }
-    .cell:first-child {
-      margin-left: -1px;
-    }
     .row {
       height: 50px;
       width: 100%;
@@ -30,6 +27,17 @@
       border: 1px solid red;
       float: left;
       background-color: #D3BCC0;
+      transition: transform 2s linear;
+    }
+    .info {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .cell.active {
+      transform: scale(2) rotateZ(360deg);
+    }
+    .cell.active .info {
+      opacity: 1;
     }
     .odd {
       background-color: #F2D7EE;
@@ -86,24 +94,37 @@
     }
     window.render = function render(cells) {
       var container = document.getElementById('container');
+      while (container.firstChild) {
+        container.removeChild(container.firstChild);
+      }
 
-      console.log(cells);
+      // console.log(cells);
       for (var row = 0; row < cells.length; row++) {
-        console.log('row: ', row);
-        console.log(cells[row]);
         for (var column = 0; column < cells[row].length; column++) {
-          console.log('column: ', column);
           var newCell = document.createElement('div');
+          newCell.dataset.row = row;
+          newCell.dataset.column = column;
+          newCell.innerHTML = '<div class="info">('+row+','+column+')</div>';
           newCell.className = 'cell';
           if ((row + column) % 2 === 0) {
             newCell.className = newCell.className + ' odd';
           }
+          if (window.gameState.cells[row][column].active) {
+            newCell.className = newCell.className + ' active';
+          }
+          // console.log('col: ', column);
+          newCell.onclick = genOnClick(row, column);
           container.appendChild(newCell);
         }
       }
     };
 
-    
+    function genOnClick(row, column) {
+      return (function cellOnClick(row, column) {
+        window.gameState.cells[row][column].active = !window.gameState.cells[row][column].active;
+        window.render(window.gameState.cells);
+      }).bind(null, row, column);
+    }
 
     function updateCells() {
 
